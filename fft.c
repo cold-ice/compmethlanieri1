@@ -326,9 +326,9 @@ void QAM_input(struct complex *data,double amp,int32_t N,int32_t Nu,char M)
 }
 
 void fft_distortion_test(
-      int32_t N,                              // dimension of FFT under test
+      int32_t N,                          // dimension of FFT under test
       char test,                          // type of test
-      char arch,                         // select atchitecture
+      char arch,                          // select atchitecture
       double input_dB,                    // strength of input
       char *scale,                        // pointr to scaling schedule
       double *maxSNR,                     // pointer best signal-to-noise ratio
@@ -353,6 +353,7 @@ void fft_distortion_test(
 
   switch (test)
     {
+			  default:
         case 0:       /** Generate cosine **/
           for (i=0; i<N; i++)
             data[i].r=pow(10,.05*input_dB)*cos(2.0*PI*.1*i)*sqrt(2);
@@ -364,9 +365,6 @@ void fft_distortion_test(
 
         case 2:    // 16-QAM
           QAM_input(data,pow(10,.05*input_dB),N,N,1);
-        break;
-
-        default:
         break;
     }
 
@@ -402,8 +400,7 @@ void fft_distortion_test(
           mean_in += data[i].r*data[i].r + data[i].i*data[i].i;
           mean_error += pow((data[i].r-((double)data16[i].r/32767.0)),2) + pow((data[i].i-((double)data16[i].i/32767.0)),2);
         }
-    } else
-    {
+    } else {
       // Do Q24xQ17 FFT
       radix4_fixed_Q24xQ17(data32, N, scale, 0);
       bit_r4_reorder_fixed_Q17(data32, N, scale[6]);
@@ -445,7 +442,7 @@ int32_t main(int32_t argc, char *argv[])
 
   if (argc!= 4)
   {
-    printf("fft size(16-4096) test(0-2) Q(0-1)!!\n");
+    printf("fft size(16-4096) test(0-2) architecture(0-1)!!\n");
     exit(-1);
   }
 

@@ -395,8 +395,8 @@ void fft_distortion_test(
       bit_r4_reorder_fixed_Q15(data16, N,scale[6]);
 
       // Compute Distortion statistics
-      mean_error = 0.0;
-      mean_in = 0.0;
+      //mean_error = 0.0;
+      //mean_in = 0.0;
       for (i=0;i<N;i++)
         {
           mean_in += data[i].r*data[i].r + data[i].i*data[i].i;
@@ -409,8 +409,8 @@ void fft_distortion_test(
       bit_r4_reorder_fixed_Q17(data32, N, scale[6]);
 
       // Compute Distortion statistics
-      mean_error = 0.0;
-      mean_in = 0.0;
+      //mean_error = 0.0;
+      //mean_in = 0.0;
       for (i=0;i<N;i++)
         {
           mean_in += data[i].r*data[i].r + data[i].i*data[i].i;

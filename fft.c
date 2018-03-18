@@ -355,8 +355,8 @@ void fft_distortion_test(
     {
 			  default:
         case 0:       /** Generate cosine **/
-          for (i=0; i<N; i++)
-            data[i].r=pow(10,.05*input_dB)*cos(2.0*PI*.1*i)*sqrt(2);
+        for (i=0; i<N; i++)
+          data[i].r=pow(10,.05*input_dB)*cos(2.0*PI*.1*i)*sqrt(2);
         break;
 
         case 1:    // QPSK

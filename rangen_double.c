@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <math.h>
+#include <stdint.h>
 
-static unsigned long seed, iy, ir[98];
+static uint32_t seed, iy, ir[98];
 /*
 @defgroup _uniformdouble 
 @ingroup numerical Uniform linear congruential random number generator.
@@ -15,12 +16,12 @@ static unsigned long seed, iy, ir[98];
 
 void randominit()
 {
-  int i;
-  unsigned seedfather;
+  int32_t i;
+  uint32_t seedfather;
 
-  srand((unsigned)time(NULL));
+  srand((uint32_t)time(NULL));
 
-  seed = (unsigned long) rand();
+  seed = (uint32_t) rand();
   if (seed % 2 == 0) seed += 1; /* seed and mod are relative prime */
   for (i=1; i<=97; i++)
   {

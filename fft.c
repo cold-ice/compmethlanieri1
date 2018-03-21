@@ -10,7 +10,6 @@
 #define PI 3.14159265359
 #define MAXPOW 24
 
-
 double gaussdouble(double,double);
 unsigned int taus();
 void randominit();
@@ -76,10 +75,10 @@ void bit_r4_reorder_fixed_Q15(struct complex16 *W, int32_t N, char scale)       
   int32_t bits, i, j, k;
   int16_t tempr, tempi;
 
-  /*for (i=0; i<N; i++){
+  for (i=0; i<N; i++){
     W[i].r = W[i].r >> scale;
     W[i].i = W[i].i >> scale;
-  }*/
+  }
 
   for (i=0; i<MAXPOW; i++)
     if (pow_2[i]==N) bits=i;
@@ -94,10 +93,10 @@ void bit_r4_reorder_fixed_Q15(struct complex16 *W, int32_t N, char scale)       
 	      }
       if (j>i)  /** Only make "up" swaps */
         {
-	         tempr=W[i].r>>scale;
-	         tempi=W[i].i>>scale;
-	         W[i].r=W[j].r>>scale;
-	         W[i].i=W[j].i>>scale;
+	         tempr=W[i].r;
+	         tempi=W[i].i;
+	         W[i].r=W[j].r;
+	         W[i].i=W[j].i;
 	         W[j].r=tempr;
 	         W[j].i=tempi;
 	      }
@@ -107,12 +106,12 @@ void bit_r4_reorder_fixed_Q15(struct complex16 *W, int32_t N, char scale)       
 void bit_r4_reorder_fixed_Q17(struct complex32 *W, int32_t N, char scale)
 {
   int32_t bits, i, j, k;
-  int32_t tempr, tempi; //int16_t modified to int32_t
+  int32_t tempr, tempi;
 
-  /*for (i=0; i<N; i++){
+  for (i=0; i<N; i++){
     W[i].r = W[i].r >> scale;
     W[i].i = W[i].i >> scale;
-  }*/
+  }
 
   for (i=0; i<MAXPOW; i++){
     if (pow_2[i]==N) bits=i;
@@ -126,10 +125,10 @@ void bit_r4_reorder_fixed_Q17(struct complex32 *W, int32_t N, char scale)
 	    }
 
       if (j>i){  /** Only make "up" swaps */
-    	  tempr=W[i].r>>scale;
-    	  tempi=W[i].i>>scale;
-    	  W[i].r=W[j].r>>scale;
-    	  W[i].i=W[j].i>>scale;
+    	  tempr=W[i].r;
+    	  tempi=W[i].i;
+    	  W[i].r=W[j].r;
+    	  W[i].i=W[j].i;
     	  W[j].r=tempr;
     	  W[j].i=tempi;
 	    }
@@ -310,6 +309,7 @@ void QAM_input(struct complex *data,double amp,int32_t N,int32_t Nu,char M)
 
       switch (M)
         {
+            default:
             case 0 :   // QPSK
               data[(i+FCO)%N].r = ((rv&1) ? -amp : amp)/sqrt(2.0);
               data[(i+FCO)%N].i = (((rv>>1)&1) ? -amp : amp)/sqrt(2.0);
@@ -317,8 +317,6 @@ void QAM_input(struct complex *data,double amp,int32_t N,int32_t Nu,char M)
             case 1 :   // 16QAM
               data[(i+FCO)%N].r = (2*(rv&3) - 3)*amp/sqrt(10);
               data[(i+FCO)%N].i = (2*((rv>>2)&3) - 3)*amp/sqrt(10);
-            break;
-            default:
             break;
         }
     }
@@ -353,8 +351,8 @@ void fft_distortion_test(
 
   switch (test)
     {
-			  default:
-        case 0:       /** Generate cosine **/
+        default:
+        case 0:     /** Generate cosine **/
         for (i=0; i<N; i++)
           data[i].r=pow(10,.05*input_dB)*cos(2.0*PI*.1*i)*sqrt(2);
         break;
@@ -366,6 +364,14 @@ void fft_distortion_test(
         case 2:    // 16-QAM
           QAM_input(data,pow(10,.05*input_dB),N,N,1);
         break;
+
+       case 3:       /** WGN **/
+       for (i=0; i<N; i++){
+         randominit();
+         data[i].r=pow(10,.05*input_dB)*gaussdouble(0.0,1.0)/sqrt(2);
+         data[i].i=pow(10,.05*input_dB)*gaussdouble(0.0,1.0)/sqrt(2);
+       }
+       break; 
     }
 
   // Make fixed-point versions of data
@@ -373,8 +379,8 @@ void fft_distortion_test(
     {
         data16[i].r = (int16_t)(data[i].r*32767);
         data16[i].i = (int16_t)(data[i].i*32767);
-        data32[i].r = (int32_t)(data[i].r*16777215);
-        data32[i].i = (int32_t)(data[i].i*16777215);
+        data32[i].r = (int32_t)(data[i].r*32767);
+        data32[i].i = (int32_t)(data[i].i*32767);
     }
 
   // Do Floating-point FFT
@@ -411,7 +417,7 @@ void fft_distortion_test(
       for (i=0;i<N;i++)
         {
           mean_in += data[i].r*data[i].r + data[i].i*data[i].i;
-          mean_error += pow((data[i].r-((double)data32[i].r/16777215.0)),2) + pow((data[i].i-((double)data32[i].i/16777215.0)),2);
+          mean_error += pow((data[i].r-((double)data32[i].r/32767.0)),2) + pow((data[i].i-((double)data32[i].i/32767.0)),2);
         }
     }
 
@@ -459,9 +465,9 @@ int32_t main(int32_t argc, char *argv[])
     exit(-1);
   }
 
-  if ((test>2) || (test<0))
+  if ((test>3) || (test<0))
   {
-    printf("test must be in (0-2)\n");
+    printf("test must be in (0-3)\n");
     exit(-1);
   }
 

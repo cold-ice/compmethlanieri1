@@ -300,8 +300,6 @@ void QAM_input(struct complex *data,double amp,int32_t N,int32_t Nu,char M)
       data[i].r = 0.0;
       data[i].i = 0.0;
     }
-  randominit();
-  set_taus_seed();
 
   for (i=0;i<Nu;i++)
     {
@@ -367,7 +365,6 @@ void fft_distortion_test(
 
        case 3:       /** WGN **/
        for (i=0; i<N; i++){
-         randominit();
          data[i].r=pow(10,.05*input_dB)*gaussdouble(0.0,1.0)/sqrt(2);
          data[i].i=pow(10,.05*input_dB)*gaussdouble(0.0,1.0)/sqrt(2);
        }
@@ -498,6 +495,8 @@ int32_t main(int32_t argc, char *argv[])
     }
 
   //printf("res_%d = [ \n",N);
+  randominit();
+  set_taus_seed();
 
   for (input_dB=-40;input_dB<0;input_dB++)
     {

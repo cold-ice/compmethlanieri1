@@ -67,13 +67,20 @@ for test = [0, 1, 2, 3]
  plot(x3, y3)
  plot(x4, y4)
  plot(x5, y5)
- plot(x5, limit, 'black')
+ if(arch==0)
+  plot(x5, limit, 'black')
+ end
  legend1=legend('16 points', '64 points', '256 points', '1024 points', '4096 points')
- set(legend1,...
-    'Position',[0.144047622879346 0.130158735480573 0.21964285331113 0.1928571375353]);
+ if(arch==0)
+  set(legend1,...
+     'Position',[0.144047622879346 0.130158735480573 0.21964285331113 0.1928571375353]);
+ else
+     set(legend1,...
+    'Position',[0.67083333716506 0.132539687861525 0.21964285331113 0.1928571375353]);
+ end
  hold off
 
  john=sprintf('%s_%s', tests, archs);
- print(john, '-dpng')
+ print(john, '-depsc')
  end
 end

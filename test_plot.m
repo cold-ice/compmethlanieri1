@@ -6,7 +6,7 @@ test=0;
 arch=0;
 
 for test = [0, 1, 2, 3]
- for arch = [0, 1]    
+ %for arch = [0, 1]    
    if arch==0
      archs='16';
    else
@@ -80,7 +80,7 @@ for test = [0, 1, 2, 3]
  end
  hold off
 
- john=sprintf('%s_%s', tests, archs);
- print(john, '-depsc')
- end
+ %john=sprintf('%s_%s', tests, archs);
+ %print(john, '-depsc')
+ %end
 end

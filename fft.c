@@ -378,6 +378,7 @@ void fft_distortion_test(
         data16[i].i = (int16_t)(data[i].i*32767);
         data32[i].r = (int32_t)(data[i].r*32767);
         data32[i].i = (int32_t)(data[i].i*32767);
+		  //printf("%x %x %x %x\n", data[i].r, data[i].i, data16[i].r, data16[i].i);
     }
 
   // Do Floating-point FFT
